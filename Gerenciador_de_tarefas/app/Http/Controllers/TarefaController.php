@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Tarefa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class TarefaController extends Controller
 {
@@ -12,7 +14,8 @@ class TarefaController extends Controller
      */
     public function index()
     {
-        //
+        $tarefas = Tarefa::where('user_id', Auth::id())->get();
+        return view('usuario.index', compact('tarefas'));
     }
 
     /**
@@ -34,7 +37,9 @@ class TarefaController extends Controller
             'prioridade'=>['required','enum'],
             'data_de_entrega'=>['required','date'],
         ]);
+        $validated= $request['status'] ?? 'ativa';
         Tarefa::create($validated);
+        return redirect('usuario.index')->with('success','tarefa criada com sucesso');
     }
 
     /**
@@ -48,9 +53,17 @@ class TarefaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Tarefa $tarefa)
+    public function edit(Request $request, Tarefa $tarefa)
     {
-        //
+        $validated = $request->validate([
+            'titulo' => ['required','string','max:255'],
+            'descricao'=>['required','string','max:255'],
+            'status'=>['required','enum'],
+            'prioridade'=>['required','enum'],
+            'data_de_entrega'=>['required','date'],
+        ]);
+        $tarefa->update($validated);
+        return redirect('usuario.index')->with('success','tarefa editada com sucesso');
     }
 
     /**
@@ -66,6 +79,7 @@ class TarefaController extends Controller
      */
     public function destroy(Tarefa $tarefa)
     {
-        //
+        $tarefa->delete();
+        return redirect('usuario.index')->with('success','tarefa deletada com sucesso');
     }
 }

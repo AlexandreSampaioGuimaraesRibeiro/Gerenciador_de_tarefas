@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\TarefaController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -9,12 +10,12 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 
-Route::get("/", [UsuarioController::class, 'show'])->name('usuario.show');
+Route::get("/", [UsuarioController::class, 'index'])->name('usuario.index');
 
 // ── Cadastro ──────────────────────────────────────────────────────────────
 // Exibe o formulário de cadastro
 Route::get('/cadastro', [UsuarioController::class, 'create'])
-    ->name('login.cadastro');
+    ->name('usuario.cadastro');
 
 // Processa o formulário de cadastro
 Route::post('/cadastro', [UsuarioController::class, 'store'])

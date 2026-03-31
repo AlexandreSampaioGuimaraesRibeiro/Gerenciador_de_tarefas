@@ -12,9 +12,18 @@ class UsuarioController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $validated= $request->validate([
+            'email'=>['string','required','max:255'],
+            'password'=>['string','required','max:255'],
+        ]);
+        $request= Usuario::where('email',$validated['email'])->first();
+        $senha=$request['password'];
+        if($request && Hash::check($senha, $request->senha)){
+            return redirect()->route('login.login')->with('success','Login efetuado com sucesso');
+        }
+        return redirect()->route('login.login')->with('error','Credenciais inválidas');
     }
 
     /**
@@ -45,16 +54,7 @@ class UsuarioController extends Controller
      */
     public function show(Request $request)
     {
-        $validated= $request->validate([
-            'email'=>['string','required','max:255'],
-            'password'=>['string','required','max:255'],
-        ]);
-        $request= Usuario::where('email',$validated['email'])->first();
-        $senha=$request['password'];
-        if($request && Hash::check($senha, $request->senha)){
-            return redirect()->route('login.login')->with('success','Login efetuado com sucesso');
-        }
-
+        
     }
 
     /**
